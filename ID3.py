@@ -74,10 +74,11 @@ def calc_lowest_entropy(dataset, feature_index):
 	best_thres = float('inf')
 	curr_entropy = float('inf')
 	curr_thres = float('inf')
+
 	for i in range(0, len(dataset)):
-		if curr_thres == dataset[0][feature_index]:
+		if curr_thres == dataset[i][0][feature_index]:
 			continue
-		curr_thres = dataset[0][feature_index]
+		curr_thres = dataset[i][0][feature_index]
 		(left,right) = split(dataset, curr_thres, feature_index)
 		curr_entropy = calc_entropy(left) * float(len(left))/float(len(dataset)) + calc_entropy(right) * float(len(right))/float(len(dataset))
 		if curr_entropy < best_entropy:
@@ -90,13 +91,14 @@ def calc_threshold(dataset):
 	best_feature_index = -1
 	best_entropy = float('inf')
 	best_threshold = float('inf')
+
 	for i in range(0, len(dataset[0])):
 		(entropy, thres) = calc_lowest_entropy(dataset, i)
 		if entropy < best_entropy:
 			best_entropy = entropy
 			best_feature_index = i
 			best_threshold = thres
-	print best_threshold
+
 	return (best_entropy, best_threshold, best_feature_index)
 
 
