@@ -5,6 +5,7 @@ import random
 
 training_set = []
 test_set = []
+debug_set = []
 
 class Node:
     def __init__(self,data):
@@ -105,7 +106,8 @@ def calc_threshold(dataset):
 
 load("hw3train.txt", training_set)
 load("hw3test.txt", test_set)
+load("test.txt", debug_set)
 
 sort_test = sorted(training_set, key=lambda tup: tup[0][1])
 
-print calc_threshold(training_set)
+print calc_threshold(debug_set)
