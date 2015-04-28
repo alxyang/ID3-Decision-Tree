@@ -92,7 +92,7 @@ def calc_threshold(dataset):
 	best_entropy = float('inf')
 	best_threshold = float('inf')
 
-	for i in range(0, len(dataset[0])):
+	for i in range(0, len(dataset[0][0])):
 		(entropy, thres) = calc_lowest_entropy(dataset, i)
 		if entropy < best_entropy:
 			best_entropy = entropy
