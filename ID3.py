@@ -42,6 +42,7 @@ def load(fn, ds):
 		data = (features, int(tokens[len(tokens) - 1]))
 		ds.append(data)
 
+# calculates the entropy, given that there are only 3 valid labelings 1,2,3
 def calc_entropy(data):
 	count = [0,0,0,0]
 	total = float(0)
@@ -59,6 +60,7 @@ def calc_entropy(data):
 	return entropy
 
 
+# split the data into a left(true branch) and right(false branch) given a dataset, threshold, and feature index
 def split(dataset, threshold, feature_index):
 	left = []
 	right = []
@@ -69,6 +71,7 @@ def split(dataset, threshold, feature_index):
 			right.append(datapoint)
 	return (left,right)
 
+#whats the lowest entropy and threshold I can get given a dataset and a specific feature index
 def calc_lowest_entropy(dataset, feature_index):
 	sort = sorted(dataset, key=lambda tup: tup[0][feature_index])
 	best_entropy = float('inf')
@@ -88,6 +91,7 @@ def calc_lowest_entropy(dataset, feature_index):
 	return (best_entropy, best_thres)
 
 
+#I want to know what the threshold, and feature index to split by given a dataset
 def calc_threshold(dataset):
 	best_feature_index = -1
 	best_entropy = float('inf')
@@ -108,6 +112,6 @@ load("hw3train.txt", training_set)
 load("hw3test.txt", test_set)
 load("test.txt", debug_set)
 
-sort_test = sorted(training_set, key=lambda tup: tup[0][1])
+sort_test = sorted(training_set, key=lambda tup: tup[0][2])
 
-print calc_threshold(debug_set)
+print calc_threshold(training_set)
