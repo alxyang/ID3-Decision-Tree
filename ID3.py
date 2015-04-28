@@ -57,8 +57,53 @@ def calc_entropy(data):
 	entropy = entropy * -1
 	return entropy
 
+
+def split(dataset, threshold, feature_index):
+	left = []
+	right = []
+	for datapoint in dataset:
+		if datapoint[0][feature_index] <= threshold:
+			left.append(datapoint)
+		else:
+			right.append(datapoint)
+	return (left,right)
+
+def calc_lowest_entropy(dataset, feature_index):
+	sort = sorted(dataset, key=lambda tup: tup[0][feature_index])
+	best_entropy = float('inf')
+	best_thres = float('inf')
+	curr_entropy = float('inf')
+	curr_thres = float('inf')
+	for i in range(0, len(dataset)):
+		if curr_thres == dataset[0][feature_index]:
+			continue
+		curr_thres = dataset[0][feature_index]
+		(left,right) = split(dataset, curr_thres, feature_index)
+		curr_entropy = calc_entropy(left) * float(len(left))/float(len(dataset)) + calc_entropy(right) * float(len(right))/float(len(dataset))
+		if curr_entropy < best_entropy:
+			best_entropy = curr_entropy
+			best_thres = curr_thres
+	return (best_entropy, best_thres)
+
+
+def calc_threshold(dataset):
+	best_feature_index = -1
+	best_entropy = float('inf')
+	best_threshold = float('inf')
+	for i in range(0, len(dataset[0])):
+		(entropy, thres) = calc_lowest_entropy(dataset, i)
+		if entropy < best_entropy:
+			best_entropy = entropy
+			best_feature_index = i
+			best_threshold = thres
+	print best_threshold
+	return (best_entropy, best_threshold, best_feature_index)
+
+
+
 load("hw3train.txt", training_set)
 load("hw3test.txt", test_set)
 
-sort_test = sorted(training_set, key=lambda tup: tup[0][0])
-print calc_entropy([(0,1),(0,2), (0,3)])
+sort_test = sorted(training_set, key=lambda tup: tup[0][1])
+
+print calc_threshold(training_set)
