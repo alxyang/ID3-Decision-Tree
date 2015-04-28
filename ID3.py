@@ -8,20 +8,31 @@ test_set = []
 debug_set = []
 
 class Node:
-    def __init__(self,data):
+    def __init__(self, data):
         self.left = None
         self.right = None
         self.data = data
         self.threshold_indices = -1
         self.threshold = -1
-
+        self.leaf = True
+        self.pure = True
+        self.label = -1 
+        if len(data) > 1:
+        	label = data[0][1]
+        	for i in range(1, len(data)):
+        		if label != data[i][1]:
+        			self.pure = False
+        if self.pure:
+        	self.label = data[0][1]
     def setThresholdIndices(self, index):
     	self.threshold_indices = index
     def setThreshold(self, val):
     	self.threshold = val
     def setLeft(self, elem):
+    	self.leaf = False
     	self.left = elem
-    def setright(self, elem):
+    def setRight(self, elem):
+    	self.leaf = False
     	self.right = elem
     def getRight(self):
     	return self.right
@@ -29,6 +40,12 @@ class Node:
     	return self.left
     def getData(self):
     	return self.data
+    def getLabel(self):
+    	return self.label
+    def isLeaf(self):
+    	return self.leaf
+    def isPure(self):
+    	return self.pure
 
 
 
@@ -106,6 +123,48 @@ def calc_threshold(dataset):
 
 	return (best_entropy, best_threshold, best_feature_index)
 
+def find_impure_leaf(node):
+	if node is None:
+		return None
+	if not(node.isPure()) and node.isLeaf():
+		return node
+	
+	lefty = find_impure_leaf(node.getLeft())
+	if not(lefty is None):
+		return lefty
+	
+	righty = find_impure_leaf(node.getRight())
+	if not(righty is None):
+		return righty
+
+	return None
+
+
+def ID3(root):
+
+	curr_node = find_impure_leaf(root)
+	while not(curr_node is None):
+		(entropy, threshold, feature_index) = calc_threshold(curr_node.getData())
+		(left, right) = split(curr_node.getData(), threshold, feature_index)
+
+		curr_node.setThreshold(threshold)
+		curr_node.setThresholdIndices(feature_index)
+
+		left_node = Node(left)
+		right_node = Node(right)
+		curr_node.setLeft(left_node)
+		curr_node.setRight(right_node)
+		if left_node.isPure():
+			for data in left_node.getData():
+				print data
+		print ""
+		if right_node.isPure():
+			for data in right_node.getData():
+				print data
+		print ""
+		curr_node = find_impure_leaf(root)
+		
+
 
 
 load("hw3train.txt", training_set)
@@ -114,4 +173,7 @@ load("test.txt", debug_set)
 
 sort_test = sorted(training_set, key=lambda tup: tup[0][2])
 
-print calc_threshold(training_set)
+root = Node(training_set)
+
+ID3(root)
+
