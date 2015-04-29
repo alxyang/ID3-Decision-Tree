@@ -3,9 +3,6 @@ import numpy
 import math
 import random
 
-training_set = []
-test_set = []
-debug_set = []
 
 class Node:
     def __init__(self, data):
@@ -60,22 +57,25 @@ class Node:
 
 
 
-def load_data(fn, ds):
-	f = open(fn, "r")
+def load_data(filename):
+    data_matrix = []
+	f = open(filename, "r")
 	for line in f:
 		tokens = line.split()
 		features = []
 		for i in range(0, len(tokens) - 1):
 			features.append(float(tokens[i]))
 		data = (features, int(tokens[len(tokens) - 1]))
-		ds.append(data)
+		data_matrix.append(data)
+    return data_matrix
+
 
 # calculates the entropy, given that there are only 3 valid labelings 1,2,3
 def calc_entropy(data):
 	count = [0,0,0,0]
 	total = float(0)
 	# really only need indices 1,2,3 as those are the only labels
-	for (features,label) in data:
+	for (features, label) in data:
 		count[label] = count[label] + 1
 		total = total + 1
 	entropy = float(0)
@@ -83,8 +83,7 @@ def calc_entropy(data):
 		if c == 0:
 			continue
 		prob = c / total
-		entropy = entropy + prob * math.log(prob)
-	entropy = entropy * -1
+		entropy = entropy - prob * math.log(prob)
 	return entropy
 
 
@@ -168,23 +167,23 @@ def ID3(root):
 		if left_node.isPure():
 			for data in left_node.getData():
 				print data
-		print ""
+		print "" #what is this for?
 		if right_node.isPure():
 			for data in right_node.getData():
 				print data
-		print ""
-		curr_node = find_impure_leaf(root)
+		print "" #what is this for?
+		curr_node = find_impure_leaf(root) #shouldn't there be a more efficient way of doing this than searching the whole tree each time?
 		
 
 
+def main():
+    training_set = load_data("hw3train.txt")
+    test_set = load_data("hw3test.txt")
+    debug_set = load_data("test.txt")
+    sort_test = sorted(training_set, key=lambda tup: tup[0][2]) #can you explain how this works?
+    root = Node(training_set)
+    ID3(root)
 
-load("hw3train.txt", training_set)
-load("hw3test.txt", test_set)
-load("test.txt", debug_set)
 
-sort_test = sorted(training_set, key=lambda tup: tup[0][2])
-
-root = Node(training_set)
-
-ID3(root)
-
+if __name__ == '__main__':
+    main()
