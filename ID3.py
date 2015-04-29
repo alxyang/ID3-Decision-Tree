@@ -24,32 +24,43 @@ class Node:
         			self.pure = False
         if self.pure:
         	self.label = data[0][1]
+
     def setThresholdIndices(self, index):
     	self.threshold_indices = index
+
     def setThreshold(self, val):
     	self.threshold = val
+
     def setLeft(self, elem):
     	self.leaf = False
     	self.left = elem
+
     def setRight(self, elem):
     	self.leaf = False
     	self.right = elem
+
     def getRight(self):
     	return self.right
+
     def getLeft(self):
     	return self.left
+
     def getData(self):
     	return self.data
+
     def getLabel(self):
     	return self.label
+
     def isLeaf(self):
     	return self.leaf
+
     def isPure(self):
     	return self.pure
 
 
 
-def load(fn, ds):
+
+def load_data(fn, ds):
 	f = open(fn, "r")
 	for line in f:
 		tokens = line.split()
