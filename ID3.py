@@ -34,6 +34,10 @@ class Node:
     def setRight(self, elem):
     	self.leaf = False
     	self.right = elem
+    def getThreshold(self):
+    	return self.threshold
+    def getThresholdIndices(self):
+    	return self.threshold_indices
     def getRight(self):
     	return self.right
     def getLeft(self):
@@ -154,17 +158,23 @@ def ID3(root):
 		right_node = Node(right)
 		curr_node.setLeft(left_node)
 		curr_node.setRight(right_node)
-		if left_node.isPure():
-			for data in left_node.getData():
-				print data
-		print ""
-		if right_node.isPure():
-			for data in right_node.getData():
-				print data
-		print ""
 		curr_node = find_impure_leaf(root)
 		
-
+def calc_error(dataset, root):
+	errors = 0
+	num_samples = len(dataset)
+	for (features, label) in dataset:
+		curr_node = root
+		while not(curr_node.isPure()):
+			threshold = curr_node.getThreshold()
+			feature_index = curr_node.getThresholdIndices()
+			if features[feature_index] <= threshold:
+				curr_node = curr_node.getLeft()
+			else:
+				curr_node = curr_node.getRight()
+		if not(label == curr_node.getLabel()):
+			errors = errors + 1
+	return float(errors) / float(num_samples)
 
 
 load("hw3train.txt", training_set)
@@ -176,4 +186,5 @@ sort_test = sorted(training_set, key=lambda tup: tup[0][2])
 root = Node(training_set)
 
 ID3(root)
-
+print calc_error(training_set, root)
+print calc_error(test_set, root)
