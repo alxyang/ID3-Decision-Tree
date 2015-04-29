@@ -5,6 +5,7 @@ import random
 
 
 class Node:
+
     def __init__(self, data):
         self.left = None
         self.right = None
@@ -56,11 +57,10 @@ class Node:
 
 
 
-
 def load_data(filename):
     data_matrix = []
-	f = open(filename, "r")
-	for line in f:
+    f = open(filename, "r")
+    for line in f:
 		tokens = line.split()
 		features = []
 		for i in range(0, len(tokens) - 1):
