@@ -14,7 +14,7 @@ class Node:
         self.threshold = -1
         self.leaf = True
         self.pure = True
-        self.label = -1 
+        self.label = -1
         if len(data) > 1:
         	label = data[0][1]
         	for i in range(1, len(data)):
@@ -61,6 +61,11 @@ class Node:
     def isPure(self):
     	return self.pure
 
+    def getLabelOrThreshold(self):
+        if (not self.pure):
+            return "threshold: " + str(self.threshold)
+        if (self.pure):
+            return "label: " + str(self.label)
 
 
 def load_data(filename):
@@ -144,11 +149,11 @@ def find_impure_leaf(node):
 		return None
 	if not(node.isPure()) and node.isLeaf():
 		return node
-	
+
 	lefty = find_impure_leaf(node.getLeft())
 	if not(lefty is None):
 		return lefty
-	
+
 	righty = find_impure_leaf(node.getRight())
 	if not(righty is None):
 		return righty
@@ -171,7 +176,7 @@ def ID3(root):
 		curr_node.setLeft(left_node)
 		curr_node.setRight(right_node)
 		curr_node = find_impure_leaf(root)
-		
+
 def calc_error(dataset, root):
 	errors = 0
 	num_samples = len(dataset)
@@ -188,6 +193,19 @@ def calc_error(dataset, root):
 			errors = errors + 1
 	return float(errors) / float(num_samples)
 
+def print_tree(root):
+      thislevel = [root]
+      while thislevel:
+        nextlevel = list()
+        for n in thislevel:
+          print n.getLabelOrThreshold(), "training points: " + str(len(n.getData()))
+          if n.getLeft():
+              nextlevel.append(n.getLeft())
+          if n.getRight():
+              nextlevel.append(n.getRight())
+        print
+        thislevel = nextlevel
+
 
 def main():
     training_set = load_data("hw3train.txt")
@@ -198,6 +216,7 @@ def main():
     ID3(root)
     print calc_error(training_set, root)
     print calc_error(test_set, root)
+    print_tree(root)
 
 
 if __name__ == '__main__':
